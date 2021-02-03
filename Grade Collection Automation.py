@@ -4,17 +4,19 @@ Pi Beta Phi Director Academics
 Jan 26, 2021
 Automating Grade Collection
 '''
+import os
 
-def main():
-    output_doc = open('Missing Grades.txt', 'w') #students with missing grades
-    missing_emails = open('Missing Grades Emails.txt', 'w') #collection of all emails from students with missing grades
-    grades_organized = open('Organized Grades.txt', 'w') #all grades organized by term_gpa sections
+def main():   
+    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+    f = open(os.path.join(THIS_FOLDER, 'Grades Submitted.txt'), 'r') #members that submitted grades
+    z = open(os.path.join(THIS_FOLDER, 'Member Roster.txt'), 'r') #all members
+   
+    output_doc = open(os.path.join(THIS_FOLDER, 'Missing Grades.txt'), 'w') #students with missing grades
+    missing_emails = open(os.path.join(THIS_FOLDER, 'Missing Grades Emails.txt'), 'w') #collection of all emails from students with missing grades
+    grades_organized = open(os.path.join(THIS_FOLDER, 'Organized Grades.txt'), 'w') #all grades organized by term_gpa sections
 
-    f = open('Fall 2020 Grades Submitted.txt', 'r') #members that submitted grades
-    z = open('Member Roster.txt', 'r') #all members 
     read_submitted = f.readlines()
     read_all = z.readlines()
-
 
     first = [] #4.0 or above
     second = [] #3.500-3.999
@@ -26,7 +28,6 @@ def main():
     eighth = [] #2.000-2.249
     ninth = [] #below 2.000
     
-    submitted_count = 1
     submitted_names = [] #includes all the names of members that have submitted grades
     for line in read_submitted:
         column = line.strip().split('\t')
@@ -49,34 +50,23 @@ def main():
         tup = (sub_name, term_gpa)
         if (term_gpa >= 4.0):
             first.append(tup)
-            print("first!", first)
         elif (3.500 <= term_gpa <= 3.999):
             second.append(tup)
-            print("second", second)
         elif (3.250 <= term_gpa <= 3.499):
             third.append(tup)
-            print("third", third)
         elif (3.000 <= term_gpa <= 3.249):
             fourth.append(tup)
-            print("fourth", fourth)
         elif (2.750 <= term_gpa <= 2.999):
             fifth.append(tup)
-            print("fifth", fifth)
         elif (2.50 <= term_gpa <= 2.749):
             sixth.append(tup)
-            print("sixth", sixth)
         elif (2.250 <= term_gpa <= 2.499):
             seventh.append(tup)
-            print("seventh", seventh)
         elif (2.000 <= term_gpa <= 2.249):
             eighth.append(tup)
-            print("eighth", eighth)
         elif (term_gpa < 2.000):
             ninth.append(tup)
-            print("ninth", ninth)
-
-        submitted_count += 1
-
+    
     missing_dict = {} #includes all names (with number and email) of members that are missing grades
     all_count = 1
     for line in read_all:
@@ -96,65 +86,35 @@ def main():
         missing_emails.write(missing_dict.get(element)[1] + '\n')
         count += 1     
 
+    #write organized grades
     grades_organized.write("4.0 or above:" + '\n')
-    count = 1
-    for member in first:
-        grades_organized.write(str(count) + ": " + member[0] + '\t' + str(member[1]) + '\n')
-        count += 1
-
-
+    output(grades_organized, first)
     grades_organized.write("\n3.500-3.999:" + '\n')
-    count = 1
-    for member in second:
-        grades_organized.write(str(count) + ": " + member[0] + '\t' + str(member[1]) + '\n')
-        count += 1
-    
+    output(grades_organized, second)
     grades_organized.write("\n3.250-3.499:" + '\n')
-    count = 1
-    for member in third:
-        grades_organized.write(str(count) + ": " + member[0] + '\t' + str(member[1]) + '\n')
-        count += 1
-    
+    output(grades_organized, third)
     grades_organized.write("\n3.000-3.249:" + '\n')
-    count = 1
-    for member in fourth:
-        grades_organized.write(str(count) + ": " + member[0] + '\t' + str(member[1]) + '\n')
-        count += 1
-        
+    output(grades_organized, fourth)
     grades_organized.write("\n2.750-2.999" + '\n')
-    count = 1
-    for member in fifth:
-        grades_organized.write(str(count) + ": " + member[0] + '\t' + str(member[1]) + '\n')
-        count += 1
-    
+    output(grades_organized, fifth)
     grades_organized.write("\n2.50-2.749:" + '\n')
-    count = 1
-    for member in sixth:
-        grades_organized.write(str(count) + ": " + member[0] + '\t' + str(member[1]) + '\n')
-        count += 1
-        
+    output(grades_organized, sixth)
     grades_organized.write("\n2.250-2.499:" + '\n')
-    count = 1
-    for member in seventh:
-        grades_organized.write(str(count) + ": " + member[0] + '\t' + str(member[1]) + '\n')
-        count += 1
-        
+    output(grades_organized, seventh)
     grades_organized.write("\n2.000-2.249:" + '\n')
-    count = 1
-    for member in eighth:
-        grades_organized.write(str(count) + ": " + member[0] + '\t' + str(member[1]) + '\n')
-        count += 1
-        
+    output(grades_organized, eighth)
     grades_organized.write("\nbelow 2.000:" + '\n')
-    count = 1
-    for member in ninth:
-        grades_organized.write(str(count) + ": " + member[0] + '\t' + str(member[1]) + '\n')
-        count += 1
+    output(grades_organized, ninth)
 
-    
     f.close()
     z.close()
     output_doc.close()
     missing_emails.close()
     grades_organized.close()
+
+def output(grades_organized, section):
+    count = 1
+    for member in section:
+        grades_organized.write(str(count) + ": " + member[0] + '\t' + str(member[1]) + '\n')
+        count += 1 
 main()
