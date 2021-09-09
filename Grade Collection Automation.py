@@ -73,7 +73,7 @@ def main():
         listc = line.strip().split('\t')
         name = listc[0]
         number = listc[1]
-        email = listc[3]
+        email = listc[2]
         
         if name not in submitted_names:
             missing_dict[name] = (number, email)
